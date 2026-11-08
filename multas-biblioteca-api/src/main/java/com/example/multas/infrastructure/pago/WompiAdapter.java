@@ -33,14 +33,17 @@ public class WompiAdapter implements PasarelaPagoPort {
             WompiRequest request = new WompiRequest("multa-" + multa.getId(), montoEnCentavos);
             WompiResponse response = restTemplate.postForObject(urlPasarela, request, WompiResponse.class);
             boolean exitoso = response != null && "APPROVED".equalsIgnoreCase(response.status());
+            String mensaje = response != null && response.message() != null && !response.message().isBlank()
+                ? response.message()
+                : exitoso ? "Pago aprobado por Wompi" : "Pago rechazado por Wompi";
             return new ResultadoPago("WOMPI", exitoso,
                 response != null ? response.reference() : null,
-                exitoso ? "Pago aprobado por Wompi" : "Pago rechazado por Wompi");
+                mensaje);
         } catch (RestClientException ex) {
             return new ResultadoPago("WOMPI", false, null, "Wompi no disponible: " + ex.getMessage());
         }
     }
 
     private record WompiRequest(String reference, long amountInCents) {}
-    private record WompiResponse(String reference, String status) {}
+    private record WompiResponse(String reference, String status, String message) {}
 }

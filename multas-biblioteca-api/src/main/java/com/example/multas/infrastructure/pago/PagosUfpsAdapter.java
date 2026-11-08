@@ -31,13 +31,16 @@ public class PagosUfpsAdapter implements PasarelaPagoPort {
             PagosUfpsRequest request = new PagosUfpsRequest(multa.getEstudianteId(), multa.getMonto());
             PagosUfpsResponse response = restTemplate.postForObject(urlPasarela, request, PagosUfpsResponse.class);
             boolean exitoso = response != null && "APROBADA".equals(response.estadoTransaccion());
+            String mensaje = response != null && response.mensaje() != null && !response.mensaje().isBlank()
+                ? response.mensaje()
+                : exitoso ? "Pago aprobado por PagosUDES" : "Transaccion rechazada por PagosUDES";
             return new ResultadoPago("PAGOSUDES", exitoso,
                 response != null ? response.idTransaccion() : null,
-                exitoso ? "Pago aprobado por PagosUDES" : "Transaccion rechazada por PagosUDES");
+                mensaje);
         } catch (RestClientException ex) {
             return new ResultadoPago("PAGOSUDES", false, null, "PagosUDES no disponible: " + ex.getMessage());
         }
     }
      private record PagosUfpsRequest(String estudianteId, BigDecimal monto) {}
-     private record PagosUfpsResponse(String idTransaccion, String estadoTransaccion) {}
+     private record PagosUfpsResponse(String idTransaccion, String estadoTransaccion, String mensaje) {}
 }
