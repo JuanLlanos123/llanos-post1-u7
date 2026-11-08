@@ -102,5 +102,7 @@ public class Multa {
     public EstadoMulta getEstado() {
         return estado;
     }
-    
+    public LocalDate getFechaPago(){
+        return fechaPago;
+    }
 }

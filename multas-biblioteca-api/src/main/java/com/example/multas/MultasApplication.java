@@ -4,10 +4,10 @@ import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
 
 @SpringBootApplication
-public class MultasBibliotecaApiApplication {
+public class MultasApplication {
 
 	public static void main(String[] args) {
-		SpringApplication.run(MultasBibliotecaApiApplication.class, args);
+		SpringApplication.run(MultasApplication.class, args);
 	}
 
 }
