@@ -8,6 +8,8 @@ import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.ResponseStatus;
 import org.springframework.web.bind.annotation.RestControllerAdvice;
 import org.springframework.http.HttpStatus;
+
+import com.example.multas.domain.PagoRechazadoException;
 import com.example.multas.model.LimiteMultasPendientesException;
 import com.example.multas.model.MultaNotFoundException;
 import com.example.multas.model.MultaYaPagadaException;
@@ -35,5 +37,11 @@ public class GlobalExceptionHandler {
         ex.getBindingResult().getFieldErrors()
             .forEach(e -> errores.put(e.getField(), e.getDefaultMessage()));
         return errores;
+    }
+    // controller/GlobalExceptionHandler.java — se agrega este manejador
+    @ExceptionHandler(PagoRechazadoException.class)
+    @ResponseStatus(HttpStatus.PAYMENT_REQUIRED) // 402 — mas preciso que 409 para un pago rechazado por la pasarela
+    public Map<String, String> handlePagoRechazado(PagoRechazadoException ex) {
+        return Map.of("error", ex.getMessage());
     }
 }

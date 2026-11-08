@@ -52,4 +52,10 @@ public class MultaController {
     public Multa pagarEnVentanilla(@PathVariable Long id) {
         return multaService.pagarEnVentanilla(id);
     }
+
+    // controller/MultaController.java — se agrega este método al controlador de la Parte 1
+    @PostMapping("/{id}/pagar-en-linea")
+    public Multa pagarEnLinea(@PathVariable Long id) {
+    return multaService.pagarConPasarela(id);
+    }
 }
